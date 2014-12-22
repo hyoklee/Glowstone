@@ -144,6 +144,7 @@ public final class GlowServer implements Server {
                 System.out.println("Glowstone version: " + GlowServer.class.getPackage().getImplementationVersion());
                 System.out.println("Bukkit version:    " + GlowServer.class.getPackage().getSpecificationVersion());
                 System.out.println("Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
+                System.out.println("netCDF-Java version: 4.5");
                 return null;
             }
 
