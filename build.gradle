@@ -75,11 +75,13 @@ buildscript {
     repositories {
         jcenter()
         maven { url "http://repo.glowstone.net/content/groups/public/" }
+
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.2'
         classpath 'net.glowstone:remapper:1.1'
         classpath 'org.ow2.asm:asm:5.0.3'
+
     }
 }
 
@@ -94,10 +96,12 @@ repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/public/" }
     maven { url "http://repo.glowstone.net/content/groups/public/" }
+    maven { url "https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/"}
 }
 
 // Dependencies used by our project
 dependencies {
+    // runtime name: 'netcdfAll-4.5'
     compile group: 'net.glowstone', name: 'glowkit', version: project.ext.bukkitVersion
     compile 'com.flowpowered:flow-networking:1.0.0-SNAPSHOT'
     compile 'jline:jline:2.11'
@@ -105,8 +109,17 @@ dependencies {
     //compile 'org.xerial:sqlite-jdbc:3.7.2'
     compile 'org.slf4j:slf4j-jdk14:1.7.7'
     compile lombok
+    // compile 'edu.ucar:netcdf:4.3.23'
     testCompile 'junit:junit:4.8.1'
+    // testCompile 'junit:junit:4.11'
+
+    // compile 'junit:junit:4.8.1'
+
+    compile 'edu.ucar:netcdf4:4.5.3'
+    compile 'edu.ucar:cdm:4.5.3'
+
 }
+
 
 // Checkstyle plugin settings
 checkstyle {

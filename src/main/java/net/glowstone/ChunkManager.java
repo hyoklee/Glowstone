@@ -14,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
+
+
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
  * @author Graham Edgecombe
@@ -56,6 +58,8 @@ public final class ChunkManager {
         this.world = world;
         this.service = service;
         this.generator = generator;
+
+
     }
 
     /**

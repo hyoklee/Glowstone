@@ -1,5 +1,6 @@
 package net.glowstone.generator;
 
+import net.glowstone.GlowWorld;
 import net.glowstone.generator.populators.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.util.noise.SimplexOctaveGenerator;
 import java.util.Map;
 import java.util.Random;
 
+
 /**
  * Basic generator with lots of hills.
  */
@@ -19,24 +21,25 @@ public class SurfaceGenerator extends GlowChunkGenerator {
     public SurfaceGenerator() {
         super(
                 // In-ground
-                new LakePopulator(),
+                // new LakePopulator(),
                 // On-ground
                 // Desert is before tree and mushroom but snow is after so trees have snow on top
-                new DesertPopulator(),
-                new TreePopulator(),
-                new MushroomPopulator(),
-                new SnowPopulator(),
-                new FlowerPopulator(),
-                new BiomePopulator(),
+                // new DesertPopulator(),
+                // new TreePopulator(),
+                // new MushroomPopulator(),
+                // new SnowPopulator(),
+                // new FlowerPopulator(),
+                // new BiomePopulator(),
                 // Below-ground
-                new DungeonPopulator(),
+                // new DungeonPopulator(),
                 //new CavePopulator(),
-                new OrePopulator()
+                // new OrePopulator()
         );
     }
 
     @Override
     public byte[] generate(World world, Random random, int chunkX, int chunkZ) {
+        // System.out.println("SurfaceGenerator::generate()");
         Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
         OctaveGenerator noiseHeight = octaves.get("height");
         OctaveGenerator noiseJitter = octaves.get("jitter");
@@ -55,11 +58,11 @@ public class SurfaceGenerator extends GlowChunkGenerator {
 
         byte[] buf = start(Material.AIR);
 
-        int baseHeight = WORLD_DEPTH / 2;
+        int baseHeight = WORLD_DEPTH / 2; // WORLD_DEPTH is 128
         double terrainHeight = 50;
         boolean noDirt = true;
         int waterLevel = WORLD_DEPTH / 2;
-
+        /*
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 int deep = 0;
@@ -96,14 +99,28 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                 set(buf, x, 0, z, Material.BEDROCK);
             }
         }
-
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
+        */
+        GlowWorld w = (GlowWorld) world;
+        for (int x = 0; x < 16; x++) { // was 16
+            for (int z = 0; z < 16; z++) { // was 16
                 for (int y = 0; y < waterLevel; y++) {
+                    int lon = chunkX * 16 + x;
+                    int lat = chunkZ * 16 + z;
                     if (get(buf, x, y, z) == Material.AIR) {
-                        set(buf, x, y, z, matLiquid);
-                    }
+
+                        if (lon < 360 && lat < 180 && w.data[lon][lat] < 0)
+                          set(buf, x, y, z, matLiquid);
+                        else
+                          set(buf, x, y, z, Material.GRAVEL);
+
+
+                   }
                 }
+                /*
+                for (int y = waterLevel; y < 128; y++) {
+                    set(buf, x, y, z, Material.SAND);
+                }
+                */
             }
         }
 

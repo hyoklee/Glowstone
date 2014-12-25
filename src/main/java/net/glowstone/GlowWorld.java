@@ -36,6 +36,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 
+
+import ucar.ma2.ArrayFloat;
+import ucar.nc2.dataset.NetcdfDataset;
+import ucar.nc2.Variable;
+
 /**
  * A class which represents the in-game world.
  * @author Graham Edgecombe
@@ -232,8 +237,44 @@ public final class GlowWorld implements World {
      * @param server The server for the world.
      * @param creator The WorldCreator to use.
      */
+    public float[][] data;
+
     public GlowWorld(GlowServer server, WorldCreator creator) {
         this.server = server;
+
+        // Read HDF data.
+        String filename = "Q20141722014263.L3m_SNSU_SCID_V3.0_SSS_1deg.h5";
+        ucar.nc2.NetcdfFile nc = null;
+        data = new float[360][180];
+        try {
+
+            nc = NetcdfDataset.openFile(filename, null);
+            // Variable v = nc.findVariable("MeanCloudFraction");
+            Variable v = nc.findVariable("l3m_data");
+
+            long extent = v.getSize();
+            ArrayFloat.D2 presArray;
+
+            presArray = (ArrayFloat.D2) v.read();
+            int[] shape1 = presArray.getShape();
+
+            System.out.println("Shape[0]=" + shape1[0]);
+            for (int i = 0; i < shape1[0]; i++) {
+                for (int j = 0; j < shape1[1]; j++) {
+                    data[j][i] = presArray.get(i, j);
+                }
+            }
+
+
+        } catch (IOException ioe) {
+            System.out.println("Failed to open " + filename);
+        } finally {
+            if (null != nc) try {
+                nc.close();
+            } catch (IOException ioe) {
+                System.out.println("Failed to close " + filename);
+            }
+        }
 
         // set up values from WorldCreator
         name = creator.name();
@@ -310,11 +351,17 @@ public final class GlowWorld implements World {
 
             long loadTime = System.currentTimeMillis();
 
-            int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
-            for (int x = centerX - radius; x <= centerX + radius; ++x) {
-                for (int z = centerZ - radius; z <= centerZ + radius; ++z) {
+            // int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
+            int total = 11 * 22, current = 0;
+            // for (int x = centerX - radius; x <= centerX + radius; ++x) {
+            for (int x = 0; x <= 22; ++x) {
+                for (int z = 0; z <= 11; ++z) {
                     ++current;
                     loadChunk(x, z);
+                    System.out.print("loadChunk:x");
+                    System.out.println(x);
+                    System.out.print("loadChunk:z");
+                    System.out.println(z);
                     spawnChunkLock.acquire(new GlowChunk.Key(x, z));
 
                     if (System.currentTimeMillis() >= loadTime + 1000) {
@@ -367,6 +414,7 @@ public final class GlowWorld implements World {
      * Updates all the entities within this world.
      */
     public void pulse() {
+        /*
         List<GlowEntity> temp = new ArrayList<>(entities.getAll());
         List<GlowEntity> players = new LinkedList<>();
 
@@ -434,6 +482,8 @@ public final class GlowWorld implements World {
                 save(true);
             }
         }
+              */
+
     }
 
     /**
@@ -551,6 +601,8 @@ public final class GlowWorld implements World {
                     spawnChunkLock.acquire(new GlowChunk.Key(x, z));
                 }
             }
+
+
         } else {
             // attempt to immediately unload the spawn
             chunks.unloadOldChunks();

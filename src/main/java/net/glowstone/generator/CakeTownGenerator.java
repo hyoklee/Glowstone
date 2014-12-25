@@ -28,7 +28,7 @@ public class CakeTownGenerator extends GlowChunkGenerator {
     public byte[] generate(World world, Random random, int chunkX, int chunkZ) {
         final int base = WORLD_DEPTH / 4;
         final int top = WORLD_DEPTH / 2 + base;
-
+        // System.out.println("CakeTownGenerator::generate()");
         Location center = new Location(world, 0, base, 0);
 
         byte[] buf = start(Material.AIR);
@@ -41,15 +41,18 @@ public class CakeTownGenerator extends GlowChunkGenerator {
                     double dist = new Location(world, realX, y, realZ).distance(center);
                     if (dist < 100) {
                         if (y <= base + 1 && y >= base) {
-                            set(buf, x, y, z, Material.BEDROCK);
+                            set(buf, x, y, z, Material.GRASS);
+                            // set(buf, x, y, z, Material.BEDROCK);
                         } else if (y == top) {
                             set(buf, x, y, z, Material.GRASS);
                         } else {
-                            set(buf, x, y, z, Material.STONE);
+                            set(buf, x, y, z, Material.GRASS);
+                            // set(buf, x, y, z, Material.STONE);
                         }
                     } else if (dist < 102) {
                         if (y <= base + 1 && y >= base) {
-                            set(buf, x, y, z, Material.BEDROCK);
+                            // set(buf, x, y, z, Material.BEDROCK);
+                            set(buf, x, y, z, Material.GRASS);
                         } else {
                             set(buf, x, y, z, Material.GRASS);
                         }

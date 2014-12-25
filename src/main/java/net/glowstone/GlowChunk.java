@@ -84,7 +84,6 @@ public final class GlowChunk implements Chunk {
      * The dimensions of a chunk (width: x, height: z, depth: y).
      */
     public static final int WIDTH = 16, HEIGHT = 16, DEPTH = 256;
-
     /**
      * The Y depth of a single chunk section.
      */

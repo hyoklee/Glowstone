@@ -563,6 +563,7 @@ public final class GlowServer implements Server {
             defaultGameMode = GameMode.valueOf(config.getString(ServerConfig.Key.GAMEMODE));
         } catch (IllegalArgumentException | NullPointerException e) {
             defaultGameMode = GameMode.SURVIVAL;
+            // defaultGameMode = GameMode.CREATIVE;
         }
 
         // server icon
