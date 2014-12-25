@@ -243,7 +243,7 @@ public final class GlowWorld implements World {
         this.server = server;
 
         // Read HDF data.
-        String filename = "Q20141722014263.L3m_SNSU_SCID_V3.0_SSS_1deg.h5";
+        String filename = "C:\\Users\\hyoklee\\Documents\\GitHub\\HDFCRAFT\\Q20141722014263.L3m_SNSU_SCID_V3.0_SSS_1deg.h5";
         ucar.nc2.NetcdfFile nc = null;
         data = new float[360][180];
         try {

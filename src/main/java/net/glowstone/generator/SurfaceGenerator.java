@@ -44,9 +44,14 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         OctaveGenerator noiseHeight = octaves.get("height");
         OctaveGenerator noiseJitter = octaves.get("jitter");
         OctaveGenerator noiseType = octaves.get("type");
+        // System.out.println("chunkX" + chunkX);
+        // System.out.println("chunkY" + chunkX);
 
         chunkX <<= 4;
         chunkZ <<= 4;
+
+       // System.out.println("chunkX" + chunkX);
+        //System.out.println("chunkY" + chunkX);
 
         boolean nether = world.getEnvironment() == Environment.NETHER;
         Material matMain = nether ? Material.NETHERRACK : Material.DIRT;
@@ -104,8 +109,12 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         for (int x = 0; x < 16; x++) { // was 16
             for (int z = 0; z < 16; z++) { // was 16
                 for (int y = 0; y < waterLevel; y++) {
-                    int lon = chunkX * 16 + x;
-                    int lat = chunkZ * 16 + z;
+                    int lon = chunkX + x;
+
+                    int lat = chunkZ + z;
+                  //  System.out.println("lon" + lon);
+                   // System.out.println("lat" + lat);
+
                     if (get(buf, x, y, z) == Material.AIR) {
 
                         if (lon < 360 && lat < 180 && w.data[lon][lat] < 0)
