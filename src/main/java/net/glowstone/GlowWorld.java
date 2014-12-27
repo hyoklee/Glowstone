@@ -352,10 +352,10 @@ public final class GlowWorld implements World {
             long loadTime = System.currentTimeMillis();
 
             // int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
-            int total = 11 * 22, current = 0;
+            int total = 11 * 23, current = 0;
             // for (int x = centerX - radius; x <= centerX + radius; ++x) {
-            for (int x = 0; x <= 22; ++x) {
-                for (int z = 0; z <= 11; ++z) {
+            for (int x = -11; x <= 11; ++x) {
+                for (int z = -5; z <= 5; ++z) {
                     ++current;
                     loadChunk(x, z);
                     System.out.print("loadChunk:x");

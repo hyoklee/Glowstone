@@ -50,8 +50,8 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         chunkX <<= 4;
         chunkZ <<= 4;
 
-       // System.out.println("chunkX" + chunkX);
-        //System.out.println("chunkY" + chunkX);
+        System.out.println("chunkX" + chunkX);
+        System.out.println("chunkY" + chunkZ);
 
         boolean nether = world.getEnvironment() == Environment.NETHER;
         Material matMain = nether ? Material.NETHERRACK : Material.DIRT;
@@ -109,9 +109,9 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         for (int x = 0; x < 16; x++) { // was 16
             for (int z = 0; z < 16; z++) { // was 16
                 for (int y = 0; y < waterLevel; y++) {
-                    int lon = chunkX + x;
+                    int lon = chunkX + x + 180;
 
-                    int lat = chunkZ + z;
+                    int lat = chunkZ + z + 90;
                   //  System.out.println("lon" + lon);
                    // System.out.println("lat" + lat);
 
