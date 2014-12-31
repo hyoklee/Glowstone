@@ -37,7 +37,8 @@ import java.util.*;
 import java.util.logging.Level;
 
 
-import ucar.ma2.ArrayFloat;
+// import ucar.ma2.ArrayFloat;
+import ucar.ma2.*;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.Variable;
 
@@ -237,33 +238,50 @@ public final class GlowWorld implements World {
      * @param server The server for the world.
      * @param creator The WorldCreator to use.
      */
-    public float[][] data;
+    // public float[][] data;
+    public short[][] data;
 
     public GlowWorld(GlowServer server, WorldCreator creator) {
         this.server = server;
 
         // Read HDF data.
-        String filename = "C:\\Users\\hyoklee\\Documents\\GitHub\\HDFCRAFT\\Q20141722014263.L3m_SNSU_SCID_V3.0_SSS_1deg.h5";
+        // String filename = "C:\\Users\\hyoklee\\Documents\\GitHub\\HDFCRAFT\\Q20141722014263.L3m_SNSU_SCID_V3.0_SSS_1deg.h5";
+        String filename = "C:\\Users\\hyoklee\\Documents\\GitHub\\HDFCRAFT\\OMI-Aura_L2G-OMDOAO3G_2014m1229_v003-2014m1230t062208.he5";
         ucar.nc2.NetcdfFile nc = null;
-        data = new float[360][180];
+        // Change size according to dataset's dimension.
+        // data = new float[360][180];
+        data = new short[1440][720];
         try {
 
             nc = NetcdfDataset.openFile(filename, null);
             // Variable v = nc.findVariable("MeanCloudFraction");
-            Variable v = nc.findVariable("l3m_data");
+            // Variable v = nc.findVariable("l3m_data");
+            // Please note that "Data Fields" have underscore. HDF5 does not have it.
+            Variable v = nc.findVariable("/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/TerrainHeight");
+            if (null == v)
+               System.out.println("No such variable");
 
-            long extent = v.getSize();
-            ArrayFloat.D2 presArray;
+            // ArrayFloat.D2 presArray;
+            ArrayShort.D3 presArray;
 
-            presArray = (ArrayFloat.D2) v.read();
-            int[] shape1 = presArray.getShape();
+            // presArray = (ArrayFloat.D2) v.read();
+            presArray = (ArrayShort.D3) v.read();
+            int[] shape = presArray.getShape();
 
-            System.out.println("Shape[0]=" + shape1[0]);
-            for (int i = 0; i < shape1[0]; i++) {
-                for (int j = 0; j < shape1[1]; j++) {
-                    data[j][i] = presArray.get(i, j);
+            // shape[0] is 15 for array[15][720][1440].
+            System.out.println("shape[0]=" + shape[0]);
+            // int lon = chunkX + x + 180;
+            // int lat = chunkZ + z + 90;
+
+            //  for (int i = 0; i < shape[0]; i++) {
+                for (int j = 0; j < shape[1]; j++) {
+                    for (int k = 0; k < shape[2]; k++) {
+                        // data[j][i] = presArray.get(i, j);
+                        data[k][(shape[1] - 1) - j] =  presArray.get(0, j, k);
+                        //  }
+                    }
                 }
-            }
+           //  }
 
 
         } catch (IOException ioe) {
@@ -351,17 +369,29 @@ public final class GlowWorld implements World {
 
             long loadTime = System.currentTimeMillis();
 
+            // The below is original.
             // int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
-            int total = 11 * 23, current = 0;
+
+            // The below is for 360 x 180 worldmap.
+            // int total = 23 * 11, current = 0;
+
+            // The below is for 1440 x 720 worldmap.
+            int total = 92 * 44, current = 0;
+
+            // The below is original.
             // for (int x = centerX - radius; x <= centerX + radius; ++x) {
-            for (int x = -11; x <= 11; ++x) {
-                for (int z = -5; z <= 5; ++z) {
+
+            // The below is for 360 x 180 map.
+            // for (int x = -11; x <= 11; ++x) {
+            //    for (int z = -5; z <= 5; ++z) {
+            for (int x = -45; x <= 44; ++x) {
+                for (int z = -22; z <= 22; ++z) {
                     ++current;
                     loadChunk(x, z);
-                    System.out.print("loadChunk:x");
-                    System.out.println(x);
-                    System.out.print("loadChunk:z");
-                    System.out.println(z);
+                    // System.out.print("loadChunk:x");
+                    // System.out.println(x);
+                    // System.out.print("loadChunk:z");
+                    // System.out.println(z);
                     spawnChunkLock.acquire(new GlowChunk.Key(x, z));
 
                     if (System.currentTimeMillis() >= loadTime + 1000) {

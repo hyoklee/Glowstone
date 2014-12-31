@@ -50,8 +50,8 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         chunkX <<= 4;
         chunkZ <<= 4;
 
-        System.out.println("chunkX" + chunkX);
-        System.out.println("chunkY" + chunkZ);
+        // System.out.println("chunkX" + chunkX);
+        // System.out.println("chunkY" + chunkZ);
 
         boolean nether = world.getEnvironment() == Environment.NETHER;
         Material matMain = nether ? Material.NETHERRACK : Material.DIRT;
@@ -108,33 +108,51 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         GlowWorld w = (GlowWorld) world;
         for (int x = 0; x < 16; x++) { // was 16
             for (int z = 0; z < 16; z++) { // was 16
-                for (int y = 0; y < waterLevel; y++) {
-                    int lon = chunkX + x + 180;
+                // The below is for 360 x 180 map.
+                // int lon = chunkX + x + 180;
+                // int lat = chunkZ + z + 90;
 
-                    int lat = chunkZ + z + 90;
-                  //  System.out.println("lon" + lon);
-                   // System.out.println("lat" + lat);
+                // The below is for 1440 x 720 map.
+                int lon = chunkX + x + 720;
+                int lat = chunkZ + z + 360;
 
-                    if (get(buf, x, y, z) == Material.AIR) {
+                if (lon < 1440 && lat < 720) {
+                    int top = 1;
+                    if (w.data[lon][lat] > 128)
+                        top = 128;
+                    if (w.data[lon][lat] > 0 && w.data[lon][lat] < 128)
+                        top = w.data[lon][lat];
 
-                        if (lon < 360 && lat < 180 && w.data[lon][lat] < 0)
-                          set(buf, x, y, z, matLiquid);
-                        else
-                          set(buf, x, y, z, Material.GRAVEL);
+                    // for (int y = 0; y < waterLevel; y++) {
+                    for (int y = 0; y < top; y++) {
+                        if (get(buf, x, y, z) == Material.AIR) {
 
-
-                   }
+                            // if (lon < 360 && lat < 180 && w.data[lon][lat] < 0)
+                            if (w.data[lon][lat] > (short) waterLevel)
+                                // set(buf, x, y, z, matLiquid);
+                                set(buf, x, y, z, Material.GRASS);
+                            else if (w.data[lon][lat] == -1)
+                                // set(buf, x, y, z, matLiquid);
+                                set(buf, x, y, z, Material.GOLD_BLOCK);
+                            else
+                                set(buf, x, y, z, Material.BEDROCK);
+                                // set(buf, x, y, z, Material.WATER);
+                        } else
+                            set(buf, x, y, z, Material.BEDROCK);
+                    }
+                }  else {
+                    set(buf, x, 0, z, Material.BEDROCK);
                 }
-                /*
-                for (int y = waterLevel; y < 128; y++) {
-                    set(buf, x, y, z, Material.SAND);
-                }
-                */
+                        /*
+                        for (int y = waterLevel; y < 128; y++) {
+                            set(buf, x, y, z, Material.SAND);
+                        }
+                        */
             }
         }
-
         return buf;
     }
+
 
     @Override
     protected void createWorldOctaves(World world, Map<String, OctaveGenerator> octaves) {
@@ -160,7 +178,8 @@ public class SurfaceGenerator extends GlowChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
-        return new Location(world, 0, 2 + world.getHighestBlockYAt(0, 0), 0);
+        // return new Location(world, 0, 2 + world.getHighestBlockYAt(0, 0), 0);
+        return new Location(world, -410, 2 + world.getHighestBlockYAt(-410, -136), -136);
     }
 
 }
