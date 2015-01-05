@@ -350,7 +350,8 @@ public final class ServerConfig {
         PERSIST_SPAWN("world.keep-spawn-loaded", true),
 
         // game props
-        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
+        // GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode"),
+        GAMEMODE("game.gamemode", "CREATIVE", Migrate.PROPS, "gamemode"),
         FORCE_GAMEMODE("game.gamemode-force", "false", Migrate.PROPS, "force-gamemode"),
         DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty"),
         HARDCORE("game.hardcore", false, Migrate.PROPS, "hardcore"),

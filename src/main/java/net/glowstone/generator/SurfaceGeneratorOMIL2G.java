@@ -16,9 +16,9 @@ import java.util.Random;
 /**
  * Basic generator with lots of hills.
  */
-public class SurfaceGenerator extends GlowChunkGenerator {
+public class SurfaceGeneratorOMIL2G extends GlowChunkGenerator {
 
-    public SurfaceGenerator() {
+    public SurfaceGeneratorOMIL2G() {
         super(
                 // In-ground
                 // new LakePopulator(),
@@ -106,7 +106,6 @@ public class SurfaceGenerator extends GlowChunkGenerator {
         }
         */
         GlowWorld w = (GlowWorld) world;
-
         for (int x = 0; x < 16; x++) { // was 16
             for (int z = 0; z < 16; z++) { // was 16
                 // The below is for 360 x 180 map.
@@ -114,46 +113,49 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                 // int lat = chunkZ + z + 90;
 
                 // The below is for 1440 x 720 map.
-                // int lon = chunkX + x + 720;
-                // int lat = chunkZ + z + 360;
-                int lon = chunkX + x + 360;
+                int lon = chunkX + x + 720;
                 int lat = chunkZ + z + 360;
 
-                if (lon < 721 && lat < 721) {
-                    int y = 1;
-                    if (get(buf, x, y, z) == Material.AIR) {
-                        if (w.data2[lon][lat] > 0 && w.data2[lon][lat] <= 100)
-                            set(buf, x, y, z, Material.STAINED_GLASS);
-                        if (w.data2[lon][lat] == 0)
-                            set(buf, x, y, z, Material.GRASS);
-                        if (w.data2[lon][lat] == -1)
-                            set(buf, x, y, z, Material.WATER);
-                        if (w.data2[lon][lat] == -4)
-                            set(buf, x, y, z, Material.GLOWSTONE);
-                        if (w.data2[lon][lat] == 103)
-                            set(buf, x, y, z, Material.SNOW_BLOCK);
-                        if (w.data2[lon][lat] == 101)
-                            set(buf, x, y, z, Material.ICE);
-                    }
-                    y = 15;
-                    if (get(buf, x, y, z) == Material.AIR) {
-                        if (w.data[lon][lat] > 0 && w.data[lon][lat] <= 100)
-                             set(buf, x, y, z, Material.STAINED_GLASS);
-                        if (w.data[lon][lat] == 0)
-                            set(buf, x, y, z, Material.GRASS);
-                        if (w.data[lon][lat] == -4)
-                            set(buf, x, y, z, Material.GLOWSTONE);
-                        if (w.data[lon][lat] == -1)
-                            set(buf, x, y, z, Material.WATER);
-                        if (w.data[lon][lat] == 103)
-                            set(buf, x, y, z, Material.SNOW_BLOCK);
-                        if (w.data[lon][lat] == 101)
-                            set(buf, x, y, z, Material.ICE);
+                if (lon < 1440 && lat < 720) {
+                    int top = 1;
+                    if (w.data[lon][lat] > 3000)
+                        top = 5;
+                    if (w.data[lon][lat] > 0 && w.data[lon][lat] < 3000)
+                        top = 3;
 
+                    // for (int y = 0; y < waterLevel; y++) {
+                    for (int y = 0; y < top; y++) {
+                        if (get(buf, x, y, z) == Material.AIR) {
+
+                            // if (lon < 360 && lat < 180 && w.data[lon][lat] < 0)
+                            // if (w.data[lon][lat] > (short) waterLevel)
+                            if (top == 5)
+                                // set(buf, x, y, z, matLiquid);
+                                set(buf, x, y, z, Material.SNOW);
+                            else if (top == 3) {
+                                if (w.data[lon][lat] > 0 && w.data[lon][lat] < 1000)
+                                   set(buf, x, y, z, Material.GRASS);
+                                if (w.data[lon][lat] >= 1000 && w.data[lon][lat] < 2000)
+                                    set(buf, x, y, z, Material.DIAMOND_SWORD);
+                                if (w.data[lon][lat] >= 2000 && w.data[lon][lat] < 3000)
+                                    set(buf, x, y, z, Material.PORK);
+
+                            } else
+                                set(buf, x, y, z, Material.WATER);
+                                // set(buf, x, y, z, Material.WATER);
+
+                        } else
+                            set(buf, x, y, z, Material.BEDROCK);
                     }
 
                 }
                 set(buf, x, 0, z, Material.BEDROCK);
+
+                        /*
+                        for (int y = waterLevel; y < 128; y++) {
+                            set(buf, x, y, z, Material.SAND);
+                        }
+                        */
             }
         }
         return buf;
@@ -185,8 +187,8 @@ public class SurfaceGenerator extends GlowChunkGenerator {
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
         // return new Location(world, 0, 2 + world.getHighestBlockYAt(0, 0), 0);
-        int x = 0;
-        int z = 0;
+        int x = 397;
+        int z = -80;
         int y =  2 + world.getHighestBlockYAt(x, z);
 
         return new Location(world, x, y, z);

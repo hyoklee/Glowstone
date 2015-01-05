@@ -238,50 +238,75 @@ public final class GlowWorld implements World {
      * @param server The server for the world.
      * @param creator The WorldCreator to use.
      */
+    // Aquarius
     // public float[][] data;
-    public short[][] data;
+
+    // OMI L2G
+    // public short[][] data;
+
+    // NISE
+    public byte[][] data;
+    public byte[][] data2;
 
     public GlowWorld(GlowServer server, WorldCreator creator) {
         this.server = server;
 
         // Read HDF data.
         // String filename = "C:\\Users\\hyoklee\\Documents\\GitHub\\HDFCRAFT\\Q20141722014263.L3m_SNSU_SCID_V3.0_SSS_1deg.h5";
-        String filename = "C:\\Users\\hyoklee\\Documents\\GitHub\\HDFCRAFT\\OMI-Aura_L2G-OMDOAO3G_2014m1229_v003-2014m1230t062208.he5";
+        // String filename = "C:\\Users\\hyoklee\\Downloads\\OMI-Aura_L2G-OMDOAO3G_2014m1229_v003-2014m1230t062208.he5";
+        String filename = "C:\\Users\\hyoklee\\Downloads\\NISE_SSMISF17_20110424.hdf";
         ucar.nc2.NetcdfFile nc = null;
         // Change size according to dataset's dimension.
         // data = new float[360][180];
-        data = new short[1440][720];
+        // data = new short[1440][720];
+        data = new byte[721][721];
+        data2 = new byte[721][721];
         try {
 
             nc = NetcdfDataset.openFile(filename, null);
-            // Variable v = nc.findVariable("MeanCloudFraction");
-            // Variable v = nc.findVariable("l3m_data");
+            // Variable v = nc.findVariable("l3m_data"); // for Aquarius product
             // Please note that "Data Fields" have underscore. HDF5 does not have it.
-            Variable v = nc.findVariable("/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/TerrainHeight");
+            // Variable v = nc.findVariable("/HDFEOS/GRIDS/ColumnAmountO3/Data_Fields/TerrainHeight");
+            Variable v = nc.findVariable("/Northern_Hemisphere/Data_Fields/Extent");
+            Variable v2 = nc.findVariable("/Southern_Hemisphere/Data_Fields/Extent");
+
             if (null == v)
                System.out.println("No such variable");
 
+            // Aquarius
             // ArrayFloat.D2 presArray;
-            ArrayShort.D3 presArray;
+            // OMI L2G
+            // ArrayShort.D3 presArray;
+            // NISE
+            ArrayByte.D2 presArray, presArray2;
 
+            // Aquarius
             // presArray = (ArrayFloat.D2) v.read();
-            presArray = (ArrayShort.D3) v.read();
+
+            // OMI L2G
+            // presArray = (ArrayShort.D3) v.read();
+            // NISE
+            presArray = (ArrayByte.D2) v.read();
+            presArray2 = (ArrayByte.D2) v2.read();
+
             int[] shape = presArray.getShape();
 
-            // shape[0] is 15 for array[15][720][1440].
+            // shape[0] is 15 for OMI L2G TerrainHeight[15][720][1440].
             System.out.println("shape[0]=" + shape[0]);
             // int lon = chunkX + x + 180;
             // int lat = chunkZ + z + 90;
 
-            //  for (int i = 0; i < shape[0]; i++) {
+            for (int i = 0; i < shape[0]; i++) {
                 for (int j = 0; j < shape[1]; j++) {
-                    for (int k = 0; k < shape[2]; k++) {
-                        // data[j][i] = presArray.get(i, j);
-                        data[k][(shape[1] - 1) - j] =  presArray.get(0, j, k);
+                   // for (int k = 0; k < shape[2]; k++) {
+                         data[j][i] = presArray.get(i, j);
+                         data2[j][i] = presArray2.get(i, j);
+                        // for OMI L2G
+                        // data[k][(shape[1] - 1) - j] =  presArray.get(0, j, k);
                         //  }
-                    }
+                    //}
                 }
-           //  }
+            }
 
 
         } catch (IOException ioe) {
@@ -372,11 +397,14 @@ public final class GlowWorld implements World {
             // The below is original.
             // int total = (radius * 2 + 1) * (radius * 2 + 1), current = 0;
 
-            // The below is for 360 x 180 worldmap.
+            // The below is for 360 x 180 Aquarius worldmap.
             // int total = 23 * 11, current = 0;
 
-            // The below is for 1440 x 720 worldmap.
-            int total = 92 * 44, current = 0;
+            // The below is for 1440 x 720 OMI L2G worldmap.
+            // int total = 92 * 45, current = 0;
+
+            // The below is for 721 x 721 NISE worldmap.
+            int total = 45 * 45, current = 0;
 
             // The below is original.
             // for (int x = centerX - radius; x <= centerX + radius; ++x) {
@@ -384,14 +412,14 @@ public final class GlowWorld implements World {
             // The below is for 360 x 180 map.
             // for (int x = -11; x <= 11; ++x) {
             //    for (int z = -5; z <= 5; ++z) {
-            for (int x = -45; x <= 44; ++x) {
-                for (int z = -22; z <= 22; ++z) {
+
+            // The below is for 1440 x 720 map.
+            // for (int x = -45; x <= 44; ++x) {
+            //    for (int z = -22; z <= 22; ++z) {
+            for (int x = -22; x <= 22; ++x) {
+               for (int z = -22; z <= 22; ++z) {
                     ++current;
                     loadChunk(x, z);
-                    // System.out.print("loadChunk:x");
-                    // System.out.println(x);
-                    // System.out.print("loadChunk:z");
-                    // System.out.println(z);
                     spawnChunkLock.acquire(new GlowChunk.Key(x, z));
 
                     if (System.currentTimeMillis() >= loadTime + 1000) {
