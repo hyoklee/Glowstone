@@ -135,6 +135,13 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                         if (w.data2[lon][lat] == 101)
                             set(buf, x, y, z, Material.ICE);
                     }
+
+                    y = 2;
+                    if (get(buf, x, y, z) == Material.AIR) {
+                        if (w.data2[lon][lat] == 101)
+                            set(buf, x, y, z, Material.ICE);
+                    }
+
                     y = 15;
                     if (get(buf, x, y, z) == Material.AIR) {
                         if (w.data[lon][lat] > 0 && w.data[lon][lat] <= 100)
@@ -151,6 +158,13 @@ public class SurfaceGenerator extends GlowChunkGenerator {
                             set(buf, x, y, z, Material.ICE);
 
                     }
+
+                    y = 16;
+                    if (get(buf, x, y, z) == Material.AIR) {
+                        if (w.data[lon][lat] == 101)
+                            set(buf, x, y, z, Material.ICE);
+                    }
+
 
                 }
                 set(buf, x, 0, z, Material.BEDROCK);
