@@ -1,8 +1,12 @@
-Glowstone
-==========
+HDFCRAFT Glowstone Server
+==========================
 
 Introduction
 ------------
+This forked project is to create an HDFCRAFT server 
+that can create Minecraft worldmap from NASA Earth Data in HDF.
+
+
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](http://minecraft.net) server written in Java that supports plugins
 written for the [Bukkit](http://bukkit.org) API.
